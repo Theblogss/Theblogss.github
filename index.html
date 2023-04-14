@@ -23,12 +23,33 @@
 					return false;
 			    }
 			});
-			// Add code to store and retrieve chat history from local storage
+			// Add code to store and retrieve chat history from server
 			if (localStorage.getItem("chatHistory")) {
-				$("#chat").html(localStorage.getItem("chatHistory"));
+				$.ajax({
+					url: "saveChatHistory.php",
+					type: "POST",
+					data: {chatHistory: localStorage.getItem("chatHistory")},
+					success: function(response) {
+						console.log(response);
+					}
+				});
 			}
+			$.ajax({
+				url: "getChatHistory.php",
+				type: "GET",
+				success: function(response) {
+					$("#chat").html(response);
+				}
+			});
 			$(window).on("unload", function() {
-				localStorage.setItem("chatHistory", $("#chat").html());
+				$.ajax({
+					url: "saveChatHistory.php",
+					type: "POST",
+					data: {chatHistory: $("#chat").html()},
+					success: function(response) {
+						console.log(response);
+					}
+				});
 			});
 			// Add code to set dynamic background image
 			$("body").css("background-image", "url('background.jpg')");
@@ -50,6 +71,7 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+			font-family: cursive; /* Add this line to set font to cursive */
 		}
 		#chat {
 			margin-top: 50px;
@@ -59,6 +81,7 @@
 			overflow-y: scroll;
 			padding: 10px;
 			background-color: transparent; /* Change this line to set background color of chat to transparent */
+			font-family: 'cursive'; /* Add this line to set font to cursive */
 		}
 		#message {
 			margin-top: 20px;
@@ -66,6 +89,18 @@
 			width: 800px;
 			font-size: 20px;
 			text-align: center;
+			font-family: cursive; /* Add this line to set font to cursive */
+		}
+		/* Add the following code to import the cursive font */
+		@font-face {
+			font-family: 'cursive';
+			src: url('cursive.ttf');
+			font-weight: normal;
+			font-style: normal;
+		}
+		/* Add the following code to set the font of all text to cursive */
+		* {
+			font-family: 'cursive';
 		}
 	</style>
 </head>
@@ -76,6 +111,13 @@
 	<div id="chat"></div>
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 
